@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robert AI Art Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 Robert AI</h1>
+    <p>Beschreibe dein Bild:</p>
+    <input id="prompt" placeholder="z.B. ein Drache aus Neonlicht" />
+    <button onclick="generate()">Generieren</button>
+
+    <div id="output">
+      <img id="result" alt="">
+    </div>
+  </div>
+
+  <script>
+  async function generate() {
+    const prompt = document.getElementById('prompt').value.trim();
+    if (!prompt) return alert("Bitte gib eine Beschreibung ein!");
+
+    const res = await fetch("/api/generate", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({prompt})
+    });
+
+    const data = await res.json();
+    if (data.image) {
+      document.getElementById('result').src = "data:image/png;base64," + data.image;
+    } else {
+      alert("Fehler: " + data.error);
+    }
+  }
+  </script>
+</body>
+</html>
